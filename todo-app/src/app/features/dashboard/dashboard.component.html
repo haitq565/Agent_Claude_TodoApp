@@ -1,0 +1,164 @@
+<div class="dashboard">
+  <div class="page-header">
+    <h1 class="page-title">
+      <mat-icon>dashboard</mat-icon>
+      Dashboard
+    </h1>
+    <a mat-flat-button routerLink="/todos">
+      <mat-icon>list_alt</mat-icon>
+      Quản lý Todos
+    </a>
+  </div>
+
+  <!-- Stat Cards -->
+  <div class="stat-grid">
+    <mat-card class="stat-card total" appearance="outlined">
+      <mat-card-content>
+        <div class="stat-icon-wrap">
+          <mat-icon>assignment</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ store.totalCount() }}</span>
+          <span class="stat-label">Tổng cộng</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card active" appearance="outlined">
+      <mat-card-content>
+        <div class="stat-icon-wrap">
+          <mat-icon>pending_actions</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ store.activeCount() }}</span>
+          <span class="stat-label">Đang thực hiện</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card completed" appearance="outlined">
+      <mat-card-content>
+        <div class="stat-icon-wrap">
+          <mat-icon>task_alt</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ store.completedCount() }}</span>
+          <span class="stat-label">Hoàn thành</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="stat-card high-priority" appearance="outlined">
+      <mat-card-content>
+        <div class="stat-icon-wrap">
+          <mat-icon>priority_high</mat-icon>
+        </div>
+        <div class="stat-info">
+          <span class="stat-value">{{ store.highPriorityCount() }}</span>
+          <span class="stat-label">Ưu tiên cao</span>
+        </div>
+      </mat-card-content>
+    </mat-card>
+  </div>
+
+  <!-- Completion Rate -->
+  <mat-card class="completion-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>insights</mat-icon>
+        Tiến độ hoàn thành
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      <div class="rate-header">
+        <span class="rate-label">{{ store.completedCount() }} / {{ store.totalCount() }} todo hoàn thành</span>
+        <span class="rate-percent">{{ store.completionRate() }}%</span>
+      </div>
+      <mat-progress-bar
+        mode="determinate"
+        [value]="store.completionRate()"
+        class="completion-bar"
+      ></mat-progress-bar>
+
+      <div class="priority-breakdown">
+        @for (item of priorityStats; track item.label) {
+          <div class="priority-item">
+            <span class="priority-dot" [ngClass]="item.cssClass"></span>
+            <span class="priority-label-text">{{ item.label }}</span>
+            <span class="priority-count">{{ item.count }}</span>
+          </div>
+        }
+      </div>
+    </mat-card-content>
+  </mat-card>
+
+  <!-- Recent Todos Table -->
+  <mat-card class="recent-card" appearance="outlined">
+    <mat-card-header>
+      <mat-card-title>
+        <mat-icon>history</mat-icon>
+        Todos gần đây
+      </mat-card-title>
+      <div class="card-actions">
+        <a mat-button routerLink="/todos">Xem tất cả</a>
+      </div>
+    </mat-card-header>
+    <mat-card-content>
+      @if (recentTodos.length === 0) {
+        <app-empty-state
+          icon="inbox"
+          title="Chưa có todo nào"
+          message="Hãy thêm todo đầu tiên của bạn!"
+        />
+      } @else {
+        <mat-table [dataSource]="recentTodos" class="recent-table">
+          <ng-container matColumnDef="title">
+            <th mat-header-cell *matHeaderCellDef>Tiêu đề</th>
+            <td mat-cell *matCellDef="let todo">
+              <div class="todo-title-cell">
+                <mat-icon class="status-icon" [ngClass]="todo.status">
+                  {{ todo.status === 'completed' ? 'check_circle' : 'radio_button_unchecked' }}
+                </mat-icon>
+                <span [class.line-through]="todo.status === 'completed'">{{ todo.title }}</span>
+              </div>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Trạng thái</th>
+            <td mat-cell *matCellDef="let todo">
+              <mat-chip [ngClass]="'chip-' + todo.status" highlighted>
+                {{ todo.status === 'active' ? 'Đang làm' : 'Hoàn thành' }}
+              </mat-chip>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="priority">
+            <th mat-header-cell *matHeaderCellDef>Ưu tiên</th>
+            <td mat-cell *matCellDef="let todo">
+              <span class="priority-badge" [ngClass]="'priority-' + todo.priority">
+                {{ todo.priority | priorityLabel }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="dueDate">
+            <th mat-header-cell *matHeaderCellDef>Hạn chót</th>
+            <td mat-cell *matCellDef="let todo">
+              @if (todo.dueDate) {
+                <span [ngClass]="{ overdue: isOverdue(todo) }">
+                  {{ todo.dueDate | date:'dd/MM/yyyy' }}
+                </span>
+              } @else {
+                <span class="no-date">—</span>
+              }
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="recentColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: recentColumns" class="todo-row"></tr>
+        </mat-table>
+      }
+    </mat-card-content>
+  </mat-card>
+</div>

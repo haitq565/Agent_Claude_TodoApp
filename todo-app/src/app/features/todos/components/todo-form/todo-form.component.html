@@ -1,0 +1,95 @@
+<h2 mat-dialog-title class="dialog-title">
+  <mat-icon>{{ isEdit ? 'edit' : 'add_task' }}</mat-icon>
+  {{ isEdit ? 'Chỉnh sửa Todo' : 'Thêm Todo mới' }}
+</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form" class="todo-form" (ngSubmit)="save()">
+
+    <!-- Title -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Tiêu đề *</mat-label>
+      <input matInput formControlName="title" placeholder="Nhập tiêu đề todo..." autocomplete="off" />
+      <mat-error>{{ getErrorMsg('title') }}</mat-error>
+    </mat-form-field>
+
+    <!-- Description -->
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Mô tả</mat-label>
+      <textarea
+        matInput
+        formControlName="description"
+        placeholder="Mô tả chi tiết (tuỳ chọn)..."
+        rows="3"
+      ></textarea>
+    </mat-form-field>
+
+    <!-- Status + Priority -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Trạng thái *</mat-label>
+        <mat-select formControlName="status">
+          <mat-option value="active">
+            <mat-icon class="option-icon active-icon">radio_button_unchecked</mat-icon>
+            Đang làm
+          </mat-option>
+          <mat-option value="completed">
+            <mat-icon class="option-icon done-icon">check_circle</mat-icon>
+            Hoàn thành
+          </mat-option>
+        </mat-select>
+        <mat-error>{{ getErrorMsg('status') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Ưu tiên *</mat-label>
+        <mat-select formControlName="priority">
+          @for (p of priorities; track p) {
+            <mat-option [value]="p">
+              <span class="priority-dot" [class]="'dot-' + p"></span>
+              {{ p | priorityLabel }}
+            </mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ getErrorMsg('priority') }}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <!-- Category + Due Date -->
+    <div class="form-row">
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Danh mục *</mat-label>
+        <mat-select formControlName="category">
+          @for (cat of categories; track cat) {
+            <mat-option [value]="cat">{{ cat }}</mat-option>
+          }
+        </mat-select>
+        <mat-error>{{ getErrorMsg('category') }}</mat-error>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline" class="half-width">
+        <mat-label>Hạn chót</mat-label>
+        <input
+          matInput
+          [matDatepicker]="picker"
+          formControlName="dueDate"
+          placeholder="DD/MM/YYYY"
+        />
+        <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+        <mat-datepicker #picker></mat-datepicker>
+      </mat-form-field>
+    </div>
+
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end" class="dialog-actions">
+  <button mat-button (click)="cancel()">
+    <mat-icon>close</mat-icon>
+    Hủy
+  </button>
+  <button mat-flat-button (click)="save()" [disabled]="form.invalid">
+    <mat-icon>{{ isEdit ? 'save' : 'add' }}</mat-icon>
+    {{ isEdit ? 'Lưu thay đổi' : 'Thêm Todo' }}
+  </button>
+</mat-dialog-actions>

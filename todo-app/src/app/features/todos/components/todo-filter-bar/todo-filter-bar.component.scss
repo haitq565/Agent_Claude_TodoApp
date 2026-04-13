@@ -1,0 +1,66 @@
+.filter-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  background: var(--mat-sys-surface-container-low);
+  border-radius: 12px;
+  margin-bottom: 16px;
+}
+
+.filter-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.filter-row-2 {
+  gap: 12px;
+}
+
+.filter-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.filter-label {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+  max-width: 360px;
+}
+
+.category-field {
+  min-width: 160px;
+}
+
+// Remove bottom margin from form fields in filter bar
+.search-field, .category-field {
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+}
+
+.reset-btn {
+  white-space: nowrap;
+}
+
+.result-count {
+  margin-left: auto;
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  white-space: nowrap;
+}
+
+// Priority chip colors
+::ng-deep {
+  .chip-high.mat-mdc-chip-selected   { background-color: #ffebee !important; color: #c62828 !important; }
+  .chip-medium.mat-mdc-chip-selected { background-color: #fff3e0 !important; color: #e65100 !important; }
+  .chip-low.mat-mdc-chip-selected    { background-color: #e8f5e9 !important; color: #2e7d32 !important; }
+}

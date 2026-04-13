@@ -1,0 +1,75 @@
+<div class="filter-bar">
+  <!-- Row 1: Status + Priority chips -->
+  <div class="filter-row">
+    <div class="filter-group">
+      <span class="filter-label">Trạng thái:</span>
+      <mat-chip-listbox
+        [value]="store.filter().status"
+        (change)="onStatusChange($event)"
+        hideSingleSelectionIndicator
+      >
+        <mat-chip-option value="all">Tất cả</mat-chip-option>
+        <mat-chip-option value="active">Đang làm</mat-chip-option>
+        <mat-chip-option value="completed">Hoàn thành</mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+
+    <div class="filter-group">
+      <span class="filter-label">Ưu tiên:</span>
+      <mat-chip-listbox
+        [value]="store.filter().priority"
+        (change)="onPriorityChange($event)"
+        hideSingleSelectionIndicator
+      >
+        <mat-chip-option value="all">Tất cả</mat-chip-option>
+        <mat-chip-option value="high" class="chip-high">Cao</mat-chip-option>
+        <mat-chip-option value="medium" class="chip-medium">Trung bình</mat-chip-option>
+        <mat-chip-option value="low" class="chip-low">Thấp</mat-chip-option>
+      </mat-chip-listbox>
+    </div>
+  </div>
+
+  <!-- Row 2: Search + Category + Reset -->
+  <div class="filter-row filter-row-2">
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-icon matPrefix>search</mat-icon>
+      <input
+        matInput
+        [formControl]="searchControl"
+        placeholder="Tìm kiếm todo..."
+        autocomplete="off"
+      />
+      @if (searchControl.value) {
+        <button matSuffix mat-icon-button (click)="clearSearch()" matTooltip="Xóa tìm kiếm">
+          <mat-icon>close</mat-icon>
+        </button>
+      }
+    </mat-form-field>
+
+    @if (store.categories().length > 0) {
+      <mat-form-field appearance="outline" class="category-field">
+        <mat-label>Danh mục</mat-label>
+        <mat-select
+          [value]="store.filter().category"
+          (selectionChange)="onCategoryChange($event.value)"
+        >
+          <mat-option value="">Tất cả danh mục</mat-option>
+          @for (cat of store.categories(); track cat) {
+            <mat-option [value]="cat">{{ cat }}</mat-option>
+          }
+        </mat-select>
+      </mat-form-field>
+    }
+
+    @if (hasActiveFilter) {
+      <button mat-stroked-button (click)="reset()" class="reset-btn" matTooltip="Xóa bộ lọc">
+        <mat-icon>filter_alt_off</mat-icon>
+        Xóa bộ lọc
+      </button>
+    }
+
+    <span class="result-count">
+      {{ store.filteredTodos().length }} / {{ store.totalCount() }} todo
+    </span>
+  </div>
+</div>

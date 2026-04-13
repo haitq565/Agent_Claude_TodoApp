@@ -1,0 +1,69 @@
+@use '@angular/material' as mat;
+
+// ── Material 3 Theme ───────────────────────────────────────
+html {
+  @include mat.theme((
+    color: (
+      theme-type: light,
+      primary: mat.$violet-palette,
+    ),
+    typography: Roboto,
+    density: 0,
+  ));
+}
+
+// ── Base Reset ─────────────────────────────────────────────
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  font-family: Roboto, 'Helvetica Neue', Arial, sans-serif;
+  background: var(--mat-sys-surface);
+  color: var(--mat-sys-on-surface);
+}
+
+// ── Typography ─────────────────────────────────────────────
+h1, h2, h3, h4, h5, h6 { margin: 0; font-weight: 600; }
+
+// ── Scrollbar ──────────────────────────────────────────────
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: var(--mat-sys-outline-variant);
+  border-radius: 3px;
+  &:hover { background: var(--mat-sys-outline); }
+}
+
+// ── Material Dialog ────────────────────────────────────────
+.mat-mdc-dialog-container {
+  --mdc-dialog-container-shape: 16px !important;
+}
+
+// ── Material Card ──────────────────────────────────────────
+.mat-mdc-card {
+  --mdc-elevated-card-container-shape: 12px;
+  --mdc-outlined-card-container-shape: 12px;
+}
+
+// ── Material Table ─────────────────────────────────────────
+.mat-mdc-table { background: var(--mat-sys-surface) !important; }
+
+.mat-mdc-header-cell {
+  font-weight: 600 !important;
+  font-size: 12px !important;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--mat-sys-on-surface-variant) !important;
+}
+
+// ── Material Chip ──────────────────────────────────────────
+.mat-mdc-chip { font-size: 12px !important; height: 24px !important; }
+
+// ── Utility classes ────────────────────────────────────────
+.text-muted     { color: var(--mat-sys-on-surface-variant); }
+.full-width     { width: 100%; }
+.flex-center    { display: flex; align-items: center; justify-content: center; }

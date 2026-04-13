@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm --version)",
+      "Bash(ng version:*)",
+      "Bash(ng new:*)",
+      "Bash(ng add:*)",
+      "Bash(npm install:*)",
+      "Bash(npx ng:*)",
+      "Bash(npm run:*)",
+      "Bash(start chrome:*)"
+    ]
+  }
+}

@@ -1,0 +1,146 @@
+@if (store.loading()) {
+  <div class="loading-row">
+    <span>Đang tải dữ liệu...</span>
+  </div>
+} @else if (store.filteredTodos().length === 0) {
+  <app-empty-state
+    icon="search_off"
+    title="Không tìm thấy todo"
+    message="Thử thay đổi bộ lọc hoặc thêm todo mới"
+  />
+} @else {
+  <div class="table-container">
+    <mat-table [dataSource]="dataSource" matSort class="todo-table">
+
+      <!-- Checkbox column -->
+      <ng-container matColumnDef="select">
+        <th mat-header-cell *matHeaderCellDef class="col-check">
+          <mat-checkbox
+            [checked]="store.allSelected()"
+            [indeterminate]="store.someSelected()"
+            (change)="store.toggleAll()"
+            matTooltip="Chọn tất cả"
+          ></mat-checkbox>
+        </th>
+        <td mat-cell *matCellDef="let todo" class="col-check">
+          <mat-checkbox
+            [checked]="store.isSelected(todo.id)"
+            (change)="store.toggleSelection(todo.id)"
+          ></mat-checkbox>
+        </td>
+      </ng-container>
+
+      <!-- Title column -->
+      <ng-container matColumnDef="title">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Tiêu đề</th>
+        <td mat-cell *matCellDef="let todo" class="col-title">
+          <div class="title-cell">
+            <button
+              mat-icon-button
+              class="toggle-btn"
+              [class.done]="todo.status === 'completed'"
+              (click)="store.toggleStatus(todo)"
+              [matTooltip]="todo.status === 'active' ? 'Đánh dấu hoàn thành' : 'Đánh dấu đang làm'"
+            >
+              <mat-icon>
+                {{ todo.status === 'completed' ? 'check_circle' : 'radio_button_unchecked' }}
+              </mat-icon>
+            </button>
+            <div class="title-info">
+              <span class="title-text" [class.completed-text]="todo.status === 'completed'">
+                {{ todo.title }}
+              </span>
+              @if (todo.description) {
+                <span class="title-desc">{{ todo.description }}</span>
+              }
+            </div>
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Status column -->
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Trạng thái</th>
+        <td mat-cell *matCellDef="let todo">
+          <mat-chip [ngClass]="'status-chip-' + todo.status" highlighted>
+            {{ todo.status === 'active' ? 'Đang làm' : 'Hoàn thành' }}
+          </mat-chip>
+        </td>
+      </ng-container>
+
+      <!-- Priority column -->
+      <ng-container matColumnDef="priority">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Ưu tiên</th>
+        <td mat-cell *matCellDef="let todo">
+          <div class="priority-cell" [ngClass]="'priority-' + todo.priority">
+            <span class="priority-dot"></span>
+            {{ todo.priority | priorityLabel }}
+          </div>
+        </td>
+      </ng-container>
+
+      <!-- Category column -->
+      <ng-container matColumnDef="category">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Danh mục</th>
+        <td mat-cell *matCellDef="let todo">
+          <span class="category-badge">{{ todo.category }}</span>
+        </td>
+      </ng-container>
+
+      <!-- Due Date column -->
+      <ng-container matColumnDef="dueDate">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header>Hạn chót</th>
+        <td mat-cell *matCellDef="let todo">
+          @if (todo.dueDate) {
+            <span [ngClass]="{ 'overdue-text': isOverdue(todo) }">
+              <mat-icon class="date-icon" [ngClass]="{ 'overdue-icon': isOverdue(todo) }">
+                {{ isOverdue(todo) ? 'warning' : 'event' }}
+              </mat-icon>
+              {{ todo.dueDate | date:'dd/MM/yy' }}
+            </span>
+          } @else {
+            <span class="no-date">—</span>
+          }
+        </td>
+      </ng-container>
+
+      <!-- Actions column -->
+      <ng-container matColumnDef="actions">
+        <th mat-header-cell *matHeaderCellDef class="col-actions">Thao tác</th>
+        <td mat-cell *matCellDef="let todo" class="col-actions">
+          <button
+            mat-icon-button
+            (click)="editTodo.emit(todo)"
+            matTooltip="Chỉnh sửa"
+            class="action-btn edit-btn"
+          >
+            <mat-icon>edit</mat-icon>
+          </button>
+          <button
+            mat-icon-button
+            (click)="deleteTodo.emit(todo)"
+            matTooltip="Xóa"
+            class="action-btn delete-btn"
+          >
+            <mat-icon>delete</mat-icon>
+          </button>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns; sticky: true"></tr>
+      <tr
+        mat-row
+        *matRowDef="let row; columns: displayedColumns"
+        class="todo-row"
+        [class.selected-row]="store.isSelected(row.id)"
+        [class.completed-row]="row.status === 'completed'"
+      ></tr>
+    </mat-table>
+
+    <mat-paginator
+      [pageSizeOptions]="[10, 25, 50]"
+      pageSize="10"
+      showFirstLastButtons
+    ></mat-paginator>
+  </div>
+}

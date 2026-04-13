@@ -1,0 +1,52 @@
+<div class="todos-page">
+  <!-- Page Header -->
+  <div class="page-header">
+    <div class="header-left">
+      <h1 class="page-title">
+        <mat-icon>list_alt</mat-icon>
+        Quản lý Todos
+      </h1>
+      <span class="todo-counter">
+        {{ store.activeCount() }} đang làm · {{ store.completedCount() }} hoàn thành
+      </span>
+    </div>
+    <button
+      mat-flat-button
+      (click)="openAddDialog()"
+      class="add-btn"
+      matTooltip="Thêm todo mới (Ctrl+N)"
+    >
+      <mat-icon>add</mat-icon>
+      Thêm Todo
+    </button>
+  </div>
+
+  <!-- Filter Bar -->
+  <app-todo-filter-bar />
+
+  <!-- Bulk Actions (shown when items selected) -->
+  @if (store.selectedCount() > 0) {
+    <app-todo-bulk-actions (bulkDeleteRequest)="confirmBulkDelete()" />
+  }
+
+  <!-- Main Card -->
+  <mat-card appearance="outlined" class="list-card">
+    <mat-card-content class="list-card-content">
+      <app-todo-list
+        (editTodo)="openEditDialog($event)"
+        (deleteTodo)="confirmDelete($event)"
+      />
+    </mat-card-content>
+  </mat-card>
+
+  <!-- FAB -->
+  <button
+    mat-fab
+    class="fab-btn"
+    (click)="openAddDialog()"
+    matTooltip="Thêm Todo mới"
+    aria-label="Thêm Todo"
+  >
+    <mat-icon>add</mat-icon>
+  </button>
+</div>

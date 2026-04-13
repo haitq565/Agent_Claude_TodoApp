@@ -1,0 +1,63 @@
+.todos-page {
+  position: relative;
+  padding-bottom: 80px; // space for FAB
+}
+
+.page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.header-left {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.page-title {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--mat-sys-on-surface);
+  mat-icon { color: var(--mat-sys-primary); }
+}
+
+.todo-counter {
+  font-size: 13px;
+  color: var(--mat-sys-on-surface-variant);
+  padding-left: 34px;
+}
+
+.add-btn {
+  flex-shrink: 0;
+}
+
+.list-card {
+  border-radius: 12px !important;
+  overflow: hidden;
+}
+
+.list-card-content {
+  padding: 0 !important;
+}
+
+// Floating Action Button
+.fab-btn {
+  position: fixed;
+  bottom: 32px;
+  right: 32px;
+  z-index: 200;
+}
+
+@media (max-width: 600px) {
+  .page-header { flex-direction: column; }
+  .add-btn { width: 100%; }
+  .fab-btn { bottom: 16px; right: 16px; }
+}

@@ -1,0 +1,100 @@
+// ── App Shell Layout ───────────────────────────────────────
+.app-container {
+  height: 100vh;
+  overflow: hidden;
+}
+
+// ── Sidenav ────────────────────────────────────────────────
+.app-sidenav {
+  width: 256px;
+  background: var(--mat-sys-surface-container-low);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+.sidenav-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 20px 20px 16px;
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+  .brand-icon {
+    font-size: 30px;
+    height: 30px;
+    width: 30px;
+    color: var(--mat-sys-primary);
+  }
+
+  .brand-name {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--mat-sys-on-surface);
+    letter-spacing: -0.3px;
+  }
+}
+
+.nav-list {
+  flex: 1;
+  padding: 8px 0;
+}
+
+.nav-item {
+  border-radius: 8px !important;
+  margin: 2px 8px !important;
+  transition: background-color .15s;
+}
+
+::ng-deep .active-nav-item {
+  background-color: var(--mat-sys-secondary-container) !important;
+  color: var(--mat-sys-on-secondary-container) !important;
+
+  mat-icon { color: var(--mat-sys-on-secondary-container) !important; }
+}
+
+.sidenav-footer {
+  padding: 12px 20px;
+  border-top: 1px solid var(--mat-sys-outline-variant);
+}
+
+.version-text {
+  font-size: 11px;
+  color: var(--mat-sys-outline);
+}
+
+// ── Toolbar ────────────────────────────────────────────────
+.app-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 1px 4px rgba(0,0,0,.12);
+}
+
+.toolbar-title {
+  font-size: 17px;
+  font-weight: 600;
+  margin-left: 8px;
+}
+
+.toolbar-spacer { flex: 1; }
+
+// ── Global Loading Bar ─────────────────────────────────────
+.global-loading-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999;
+  height: 3px;
+}
+
+// ── Main Content ───────────────────────────────────────────
+.app-content {
+  overflow-y: auto;
+  height: 100vh;
+}
+
+.app-main {
+  padding: 24px;
+}
