@@ -10,7 +10,6 @@ import { MatChipsModule } from '@angular/material/chips';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatMenuModule } from '@angular/material/menu';
 import { TodoStore } from '../../../../core/services/todo-store.service';
 import { PriorityLabelPipe } from '../../../../shared/pipes/priority-label.pipe';
 import { EmptyStateComponent } from '../../../../shared/components/empty-state/empty-state.component';
@@ -24,7 +23,7 @@ import { Todo } from '../../../../core/models/todo.model';
     DatePipe, NgClass,
     MatTableModule, MatSortModule, MatPaginatorModule,
     MatCheckboxModule, MatChipsModule, MatIconModule,
-    MatButtonModule, MatTooltipModule, MatMenuModule,
+    MatButtonModule, MatTooltipModule,
     PriorityLabelPipe, EmptyStateComponent,
   ],
   templateUrl: './todo-list.component.html',
@@ -36,6 +35,7 @@ export class TodoListComponent implements AfterViewInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort)      sort!: MatSort;
 
+  readonly viewDetail = output<Todo>();
   readonly editTodo   = output<Todo>();
   readonly deleteTodo = output<Todo>();
 

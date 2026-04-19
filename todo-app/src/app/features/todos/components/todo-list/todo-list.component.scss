@@ -17,7 +17,7 @@
 
 // Column widths
 .col-check   { width: 52px;  padding-left: 12px !important; }
-.col-actions { width: 100px; text-align: right !important; }
+.col-actions { width: 140px; text-align: right !important; }
 
 // Title cell
 .title-cell {
@@ -121,6 +121,7 @@ td span {
 // Action buttons
 .action-btn { opacity: 0; transition: opacity .15s; }
 .todo-row:hover .action-btn { opacity: 1; }
+.view-btn   { color: var(--mat-sys-secondary); }
 .edit-btn   { color: var(--mat-sys-primary); }
 .delete-btn { color: #c62828; }
 

@@ -14,5 +14,11 @@ export const routes: Routes = [
       import('./features/todos/todos.component').then(m => m.TodosComponent),
     title: 'Quản lý Todos — Todo Admin',
   },
+  {
+    path: 'todos/:id',
+    loadComponent: () =>
+      import('./features/todos/components/todo-detail/todo-detail.component').then(m => m.TodoDetailComponent),
+    title: 'Chi tiết Todo — Todo Admin',
+  },
   { path: '**', redirectTo: 'dashboard' },
 ];

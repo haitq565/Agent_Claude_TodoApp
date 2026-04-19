@@ -1,0 +1,123 @@
+<!-- Loading -->
+@if (store.loading()) {
+  <div class="center-content">
+    <mat-spinner diameter="48"></mat-spinner>
+  </div>
+
+<!-- Not found -->
+} @else if (notFound()) {
+  <div class="center-content">
+    <mat-icon class="not-found-icon">search_off</mat-icon>
+    <h2>Không tìm thấy Todo</h2>
+    <p>Todo #{{ todoId() }} không tồn tại hoặc đã bị xóa.</p>
+    <button mat-flat-button routerLink="/todos">
+      <mat-icon>arrow_back</mat-icon>
+      Quay lại danh sách
+    </button>
+  </div>
+
+<!-- Detail -->
+} @else if (todo(); as t) {
+  <div class="detail-page">
+
+    <!-- Header -->
+    <div class="detail-header">
+      <button mat-icon-button (click)="goBack()" matTooltip="Quay lại danh sách">
+        <mat-icon>arrow_back</mat-icon>
+      </button>
+      <h1 class="detail-title">Chi tiết Todo</h1>
+      <span class="spacer"></span>
+      <button mat-stroked-button (click)="openEditDialog()">
+        <mat-icon>edit</mat-icon>
+        Chỉnh sửa
+      </button>
+    </div>
+
+    <!-- Main card -->
+    <mat-card class="detail-card">
+      <mat-card-content>
+
+        <!-- Title & Status row -->
+        <div class="title-row">
+          <h2 class="todo-title" [class.completed-text]="t.status === 'completed'">
+            {{ t.title }}
+          </h2>
+          <div class="badges">
+            <mat-chip [ngClass]="'status-chip-' + t.status" highlighted>
+              <mat-icon matChipAvatar>
+                {{ t.status === 'completed' ? 'check_circle' : 'radio_button_unchecked' }}
+              </mat-icon>
+              {{ t.status === 'active' ? 'Đang làm' : 'Hoàn thành' }}
+            </mat-chip>
+            <mat-chip [ngClass]="'priority-chip-' + t.priority" highlighted>
+              <span class="priority-dot" [ngClass]="'dot-' + t.priority"></span>
+              {{ t.priority | priorityLabel }}
+            </mat-chip>
+          </div>
+        </div>
+
+        <!-- Overdue warning -->
+        @if (isOverdue()) {
+          <div class="overdue-banner">
+            <mat-icon>warning</mat-icon>
+            <span>Đã quá hạn — hạn chót {{ t.dueDate | date:'dd/MM/yyyy' }}</span>
+          </div>
+        }
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <!-- Description -->
+        <div class="info-section">
+          <span class="info-label">
+            <mat-icon>description</mat-icon>
+            Mô tả
+          </span>
+          <p class="info-value description-text">
+            {{ t.description || '(Không có mô tả)' }}
+          </p>
+        </div>
+
+        <mat-divider class="section-divider"></mat-divider>
+
+        <!-- Meta grid -->
+        <div class="meta-grid">
+          <div class="meta-item">
+            <span class="meta-label">
+              <mat-icon>folder</mat-icon>
+              Danh mục
+            </span>
+            <span class="meta-value category-badge">{{ t.category }}</span>
+          </div>
+
+          <div class="meta-item">
+            <span class="meta-label">
+              <mat-icon>event</mat-icon>
+              Hạn chót
+            </span>
+            <span class="meta-value" [class.overdue-text]="isOverdue()">
+              {{ t.dueDate ? (t.dueDate | date:'dd/MM/yyyy') : '—' }}
+            </span>
+          </div>
+
+          <div class="meta-item">
+            <span class="meta-label">
+              <mat-icon>schedule</mat-icon>
+              Ngày tạo
+            </span>
+            <span class="meta-value">{{ t.createdAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+
+          <div class="meta-item">
+            <span class="meta-label">
+              <mat-icon>update</mat-icon>
+              Cập nhật lần cuối
+            </span>
+            <span class="meta-value">{{ t.updatedAt | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+        </div>
+
+      </mat-card-content>
+    </mat-card>
+
+  </div>
+}

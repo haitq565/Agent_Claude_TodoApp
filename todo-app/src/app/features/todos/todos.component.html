@@ -33,6 +33,7 @@
   <mat-card appearance="outlined" class="list-card">
     <mat-card-content class="list-card-content">
       <app-todo-list
+        (viewDetail)="viewDetail($event)"
         (editTodo)="openEditDialog($event)"
         (deleteTodo)="confirmDelete($event)"
       />

@@ -6,6 +6,10 @@
 /out-tsc
 /bazel-out
 
+# Playwright (test reports generated in wrong location)
+/playwright-report
+/test-results
+
 # Node
 /node_modules
 npm-debug.log

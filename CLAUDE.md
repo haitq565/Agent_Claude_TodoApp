@@ -58,16 +58,29 @@ npm run build
 
 # Unit tests (Vitest)
 npm test
+```
 
-# E2E tests (Playwright) — tự động start cả 2 server
-npm run e2e           # Headless
-npm run e2e:ui        # Mở Playwright UI mode để debug
-npx playwright test --headed   # Chạy có hiển thị trình duyệt
+### E2E tests (Playwright) — chạy từ thư mục `e2e/` riêng biệt
+```bash
+cd e:\AI_AGENT\Agent_Claude\e2e
+
+npm test                  # Tất cả tests — Chromium + Firefox (60 tests)
+npm run test:chromium     # Chỉ Chromium
+npm run test:firefox      # Chỉ Firefox
+npm run test:headed       # Có hiển thị trình duyệt
+npm run test:ui           # Mở Playwright UI để debug
+npm run test:debug        # Debug từng bước
+npm run test:crud         # Chỉ file todo-crud.spec.ts
+npm run test:filter       # Chỉ file todo-filter.spec.ts
+npm run test:search       # Chỉ file todo-search.spec.ts
+npm run report            # Xem HTML report
 ```
 
 ### Lưu ý quan trọng
 - `db.json` là CSDL thực — mọi thao tác thêm/sửa/xóa sẽ ghi trực tiếp vào file
+- E2E project nằm ở `e:\AI_AGENT\Agent_Claude\e2e\` — **độc lập** với `todo-app/`
 - Khi chạy E2E, **không cần start server thủ công** — Playwright tự quản lý qua `webServer` config
+- Các `npm run` scripts đã wrap sẵn lệnh đúng — **không cần gõ `node_modules/.bin/playwright`** trực tiếp
 - Unit test dùng **Vitest**, không phải Jasmine/Karma
 - Chỉ dùng `npm`, không dùng `yarn` hay `pnpm`
 
@@ -90,49 +103,51 @@ ng generate pipe shared/pipes/filter-todos
 ## Project Structure
 
 ```
-todo-app/
-  db.json                         # Mock database (JSON Server)
-  e2e/                            # Playwright E2E tests
+e:\AI_AGENT\Agent_Claude\
+  todo-app/                       # Angular app
+    db.json                       # Mock database (JSON Server)
+    package.json
+    src/
+      app/
+        core/
+          models/
+            todo.model.ts         # interface Todo, TodoStatus, Priority
+          services/
+            todo.service.ts       # HttpClient CRUD calls
+          interceptors/
+            loading.interceptor.ts
+        features/
+          todos/
+            components/
+              todo-list/          # Danh sách + bảng todos
+              todo-form/          # Form thêm/sửa (dialog)
+              todo-detail/        # Trang chi tiết todo (/todos/:id)
+              todo-filter-bar/    # Thanh lọc + tìm kiếm
+              todo-bulk-actions/  # Bulk select & actions
+            todos.component.ts    # Shell component
+          dashboard/
+            dashboard.component.ts
+        shared/
+          components/
+            confirm-dialog/       # Dialog xác nhận xóa
+            empty-state/          # UI khi không có data
+          pipes/
+            priority-label.pipe.ts
+            # Filtering dùng computed() signal trong TodoStore, không dùng pipe
+        app.config.ts             # provideHttpClient, provideRouter, provideAnimations
+        app.routes.ts
+        app.component.ts
+      assets/
+      styles.scss                 # Global styles + Material theme
+  e2e/                            # Playwright E2E tests (project độc lập)
+    node_modules/
+    package.json
+    playwright.config.ts
     tests/
       todo-crud.spec.ts
+      todo-edit-add-extra.spec.ts
       todo-filter.spec.ts
       todo-search.spec.ts
-    playwright.config.ts
-  src/
-    app/
-      core/
-        models/
-          todo.model.ts           # interface Todo, TodoStatus, Priority
-        services/
-          todo.service.ts         # HttpClient CRUD calls
-        interceptors/
-          loading.interceptor.ts
-      features/
-        todos/
-          components/
-            todo-list/            # Danh sách + bảng todos
-            todo-form/            # Form thêm/sửa (dialog)
-            todo-detail/          # Chi tiết todo
-            todo-filter-bar/      # Thanh lọc + tìm kiếm
-            todo-bulk-actions/    # Bulk select & actions
-          todos.routes.ts
-          todos.component.ts      # Shell component
-        dashboard/
-          dashboard.component.ts  # Thống kê tổng quan
-          dashboard.routes.ts
-      shared/
-        components/
-          confirm-dialog/         # Dialog xác nhận xóa
-          empty-state/            # UI khi không có data
-        pipes/
-          filter-todos.pipe.ts
-          priority-label.pipe.ts
-        directives/
-      app.config.ts               # provideHttpClient, provideRouter, provideAnimations
-      app.routes.ts
-      app.component.ts
-    assets/
-    styles.scss                   # Global styles + Material theme
 ```
 
 ---
@@ -158,10 +173,10 @@ export interface Todo {
 }
 
 export interface TodoFilter {
-  status?: TodoStatus | 'all';
-  priority?: Priority | 'all';
-  category?: string;
-  search?: string;
+  status: TodoStatus | 'all';
+  priority: Priority | 'all';
+  category: string;
+  search: string;
 }
 ```
 
@@ -241,6 +256,7 @@ form = this.fb.nonNullable.group({
 ## Features (Admin CRUD)
 
 - [x] Xem danh sách todos (MatTable với phân trang MatPaginator)
+- [x] Xem chi tiết todo (trang riêng `/todos/:id` — nút visibility trong bảng)
 - [x] Thêm todo mới (MatDialog + Reactive Form + validation)
 - [x] Sửa todo (cùng dialog, truyền data vào)
 - [x] Xóa todo (confirm dialog trước khi xóa)
@@ -294,45 +310,138 @@ npm test
 - Test pipes: `FilterTodosPipe`, `PriorityLabelPipe`
 - Test components: verify render, form validation
 
-### E2E Tests (Playwright)
+---
+
+### E2E Tests với Playwright
+
+E2E project nằm **độc lập** tại `e:\AI_AGENT\Agent_Claude\e2e\` — tách riêng khỏi `todo-app/`.
+
+#### Bước 1 — Cài đặt (chỉ làm một lần)
+
 ```bash
-npx playwright test
+cd e:\AI_AGENT\Agent_Claude\e2e
+
+npm install
+npm run playwright:install   # Cài Chromium + Firefox
 ```
 
-**Kịch bản cần cover** (`e2e/tests/`):
+#### Bước 2 — Cấu hình (`e2e/playwright.config.ts`)
+
+```typescript
+import { defineConfig, devices } from '@playwright/test';
+import path from 'path';
+
+const appRoot = path.resolve(__dirname, '../todo-app');  // Trỏ đến Angular app
+
+export default defineConfig({
+  testDir: './tests',
+  retries: process.env['CI'] ? 2 : 1,  // Local: 1 lần; CI: 2 lần
+  workers: 1,     // Chạy tuần tự — tránh race condition trên db.json
+  use: {
+    baseURL: 'http://localhost:4200',
+    screenshot: 'only-on-failure',
+    trace: 'on-first-retry',
+  },
+  projects: [
+    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
+    { name: 'firefox',  use: { ...devices['Desktop Firefox'] } },
+  ],
+  webServer: [
+    { command: 'npx json-server db.json --port 3000', cwd: appRoot, port: 3000, reuseExistingServer: true },
+    { command: 'npx ng serve --port 4200', cwd: appRoot, port: 4200, reuseExistingServer: true, timeout: 120_000 },
+  ],
+});
+```
+
+#### Bước 3 — Chạy tests
+
+```bash
+cd e:\AI_AGENT\Agent_Claude\e2e
+
+npm test                  # Tất cả (Chromium + Firefox, 60 tests)
+npm run test:chromium     # Chỉ Chromium
+npm run test:firefox      # Chỉ Firefox
+npm run test:headed       # Có hiển thị trình duyệt
+npm run test:ui           # Mở Playwright UI — debug từng bước
+npm run test:crud         # Chỉ file todo-crud.spec.ts
+npm run test:filter       # Chỉ file todo-filter.spec.ts
+npm run test:search       # Chỉ file todo-search.spec.ts
+npm run report            # Xem HTML report
+```
+
+#### Bước 4 — Đọc kết quả
+
+```
+ok  1 [chromium] › tests/todo-crud.spec.ts › should display the todos list   ✓ PASS
+ok  2 [firefox]  › tests/todo-crud.spec.ts › should display the todos list   ✓ PASS
+x   3 [firefox]  › tests/todo-crud.spec.ts › should edit an existing todo    ✗ FAIL (retry #1)
+ok  4 [firefox]  › tests/todo-crud.spec.ts › should edit an existing todo    ✓ PASS
+```
+
+- `ok` = pass | `x` = fail | `flaky` = fail lần 1, pass retry
+- HTML report: `e2e/playwright-report/index.html`
+
+#### Kết quả thực tế (2026-04-19)
+
+| Browser | Passed | Failed | Tổng |
+|---|---|---|---|
+| Chromium | 30 | 0 | 30 |
+| Firefox | 30 | 0 | 30 |
+| **Tổng** | **60** | **0** | **60** |
+
+#### Các file test (`e2e/tests/`)
 
 | File | Kịch bản |
 |---|---|
-| `todo-crud.spec.ts` | Thêm todo → kiểm tra danh sách; Sửa todo → kiểm tra cập nhật; Xóa todo → kiểm tra biến mất |
-| `todo-status.spec.ts` | Toggle hoàn thành; Bulk mark complete |
-| `todo-filter.spec.ts` | Lọc All/Active/Completed; Lọc theo priority |
-| `todo-search.spec.ts` | Tìm kiếm theo keyword; Clear search |
+| `todo-crud.spec.ts` | Hiển thị danh sách; Thêm/Sửa/Xóa todo; Validation; Toggle trạng thái |
+| `todo-edit-add-extra.spec.ts` | Edge cases: pre-fill form; validation maxLength; cancel không lưu |
+| `todo-filter.spec.ts` | Lọc theo Active/Completed/High priority; Reset bộ lọc; Lọc theo category |
+| `todo-search.spec.ts` | Tìm kiếm; Empty state; Clear search; Bulk actions |
 
-**Config Playwright** (`playwright.config.ts`):
+#### Thêm test case mới
+
+Tạo file mới trong `e2e/tests/`, ví dụ `todo-dashboard.spec.ts`:
+
 ```typescript
-baseURL: 'http://localhost:4200'
-// Chạy JSON Server và ng serve trước khi test
+import { test, expect } from '@playwright/test';
+
+test.describe('Dashboard', () => {
+  test.beforeEach(async ({ page }) => {
+    await page.goto('/dashboard');
+  });
+
+  test('should show stat cards', async ({ page }) => {
+    await expect(page.locator('.stat-card')).toHaveCount(4);
+  });
+});
 ```
+
+Playwright tự động nhận file mới, không cần cấu hình thêm.
 
 ---
 
 ## Setup Mới
 
 ```bash
-# 1. Tạo dự án Angular 20
+# 1. Tạo dự án Angular
 ng new todo-app --standalone --routing --style=scss
 
 # 2. Cài Angular Material
+cd todo-app
 ng add @angular/material
 
 # 3. Cài JSON Server + Concurrently
 npm install --save-dev json-server concurrently
 
-# 4. Cài Playwright
-npm init playwright@latest
-
-# 5. Tạo db.json
+# 4. Tạo db.json
 echo '{"todos":[]}' > db.json
+
+# 5. Tạo E2E project riêng (đồng cấp với todo-app)
+mkdir ../e2e && cd ../e2e
+npm init -y
+npm install --save-dev @playwright/test
+npm run playwright:install   # Cài Chromium + Firefox (script trong package.json)
+mkdir tests
 ```
 
 ---
@@ -344,3 +453,60 @@ echo '{"todos":[]}' > db.json
 - JSON Server chạy ở `http://localhost:3000`
 - Angular dev server chạy ở `http://localhost:4200`
 - Package manager: `npm` (không dùng yarn/pnpm)
+
+---
+
+## Changelog
+
+### 2026-04-19 — E2E Restructure & Firefox Fixes
+
+**E2E tách thành project độc lập**
+- Di chuyển `todo-app/e2e/` → `e2e/` đồng cấp với `todo-app/`
+- E2E có `package.json` riêng, `node_modules` riêng, không phụ thuộc Angular app
+- Lý do: tránh xung đột 2 phiên bản `@playwright/test` khi chạy từ `todo-app/`
+
+**Cấu hình Playwright cải thiện**
+- `workers: 1` — chạy tuần tự, tránh race condition nhiều tests cùng write `db.json`
+- `retries: 1` — tự retry khi Firefox flaky, không cần sửa từng test
+- `cwd: appRoot` trong `webServer` — Playwright start đúng thư mục `todo-app/`
+
+**Firefox timing fixes**
+- `todo-crud.spec.ts`: hover vào row trước để button hiện, rồi click trong row (không hover button ẩn)
+- `todo-crud.spec.ts`: thêm `await expect(app-todo-form).not.toBeVisible({ timeout: 10000 })` sau save
+- `todo-edit-add-extra.spec.ts`: thêm `await expect(mat-table).toBeVisible()` sau dialog đóng trước khi assert
+
+**Kết quả sau fix**
+
+| Browser | Passed | Failed | Tổng |
+|---|---|---|---|
+| Chromium | 30 | 0 | 30 |
+| Firefox | 30 | 0 | 30 |
+| **Tổng** | **60** | **0** | **60** |
+
+**Skills cập nhật**
+- `.claude/skills/test-playwright.md` — cập nhật lệnh chạy, cấu trúc mới, patterns Firefox
+- `.claude/skills/run-app.md` — tạo mới, hướng dẫn setup + chạy toàn bộ project
+
+### 2026-04-19 — TodoDetail + Doc Fixes
+
+**Thêm tính năng todo-detail**
+- Tạo `todo-detail` component tại `features/todos/components/todo-detail/`
+- Route mới `/todos/:id` — trang chi tiết với đầy đủ fields (title, status, priority, category, description, dueDate, createdAt, updatedAt)
+- Nút "Xem chi tiết" (visibility icon) trong cột actions của bảng
+- Cảnh báo overdue, nút Edit mở dialog, nút Back về `/todos`
+- Lazy loaded chunk riêng — không ảnh hưởng bundle chính
+
+**Sửa docs lệch với code**
+- `TodoFilter` interface: đổi fields từ optional (`?`) → required (khớp với code thực tế)
+- Playwright `retries`: đổi từ `1` tĩnh → `process.env['CI'] ? 2 : 1` (dynamic)
+- Project structure: xóa `todos.routes.ts`, `dashboard.routes.ts` (routes gộp trong `app.routes.ts`)
+- Project structure: xóa `filter-todos.pipe.ts` (filtering dùng `computed()` signal trong TodoStore)
+- E2E commands: đổi từ `node_modules/.bin/playwright` → `npm run ...` (dùng scripts trong package.json)
+
+**Kết quả sau thay đổi**
+
+| Browser | Passed | Failed | Tổng |
+|---|---|---|---|
+| Chromium | 30 | 0 | 30 |
+| Firefox | 30 | 0 | 30 |
+| **Tổng** | **60** | **0** | **60** |

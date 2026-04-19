@@ -1,9 +1,9 @@
 import { Component, inject, OnInit, ChangeDetectionStrategy } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatDialog } from '@angular/material/dialog';
 import { MatTooltipModule } from '@angular/material/tooltip';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatCardModule } from '@angular/material/card';
 import { TodoStore } from '../../core/services/todo-store.service';
 import { TodoFilterBarComponent } from './components/todo-filter-bar/todo-filter-bar.component';
@@ -19,7 +19,7 @@ import { Todo } from '../../core/models/todo.model';
   changeDetection: ChangeDetectionStrategy.OnPush,
   imports: [
     MatButtonModule, MatIconModule, MatTooltipModule,
-    MatProgressSpinnerModule, MatCardModule,
+    MatCardModule,
     TodoFilterBarComponent, TodoListComponent,
     TodoBulkActionsComponent,
   ],
@@ -29,10 +29,15 @@ import { Todo } from '../../core/models/todo.model';
 export class TodosComponent implements OnInit {
   readonly store  = inject(TodoStore);
   private dialog  = inject(MatDialog);
+  private router  = inject(Router);
 
   ngOnInit(): void {
     this.store.loadAll();
     this.store.clearSelection();
+  }
+
+  viewDetail(todo: Todo): void {
+    this.router.navigate(['/todos', todo.id]);
   }
 
   openAddDialog(): void {

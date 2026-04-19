@@ -47,8 +47,10 @@ test.describe('Todo CRUD Operations', () => {
   });
 
   test('should edit an existing todo', async ({ page }) => {
-    const editBtn = page.locator('button[mattooltip="Chỉnh sửa"]').first();
-    await editBtn.hover();
+    // Hover vào row trước để button hiện ra (Firefox cần hover vào row, không phải button ẩn)
+    const firstRow = page.locator('mat-table .mat-mdc-row').first();
+    await firstRow.hover();
+    const editBtn = firstRow.locator('button[mattooltip="Chỉnh sửa"]');
     await editBtn.click();
 
     await page.waitForSelector('app-todo-form');
@@ -60,6 +62,8 @@ test.describe('Todo CRUD Operations', () => {
     await titleInput.fill('Updated Todo Title');
     await page.getByRole('button', { name: /Lưu thay đổi/i }).click();
 
+    // Wait for dialog to close before checking table (Firefox needs extra time)
+    await expect(page.locator('app-todo-form')).not.toBeVisible({ timeout: 10000 });
     await expect(page.locator('mat-table')).toContainText('Updated Todo Title');
   });
 
