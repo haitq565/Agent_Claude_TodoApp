@@ -1,22 +1,12 @@
 {
   "todos": [
     {
-      "title": "Todo Full Fields 1776591232064",
-      "description": "Mô tả chi tiết của todo",
+      "title": "Test Todo 1776594484790",
       "status": "completed",
       "priority": "low",
       "category": "Work",
-      "createdAt": "2026-04-19T09:33:52.883Z",
-      "updatedAt": "2026-04-19T14:54:18.073Z",
-      "id": 29
-    },
-    {
-      "title": "Test Todo 1776594484790",
-      "status": "active",
-      "priority": "high",
-      "category": "Work",
       "createdAt": "2026-04-19T10:28:05.968Z",
-      "updatedAt": "2026-04-19T10:28:05.968Z",
+      "updatedAt": "2026-04-27T14:47:55.562Z",
       "id": 30
     },
     {
@@ -399,6 +389,105 @@
       "createdAt": "2026-04-19T14:55:02.359Z",
       "updatedAt": "2026-04-19T14:55:02.359Z",
       "id": 70
+    },
+    {
+      "title": "API Test Todo 1777262405098",
+      "description": "Created by Playwright API test",
+      "status": "active",
+      "priority": "medium",
+      "category": "Work",
+      "createdAt": "2026-04-27T04:00:05.098Z",
+      "updatedAt": "2026-04-27T04:00:05.099Z",
+      "id": 71
+    },
+    {
+      "title": "API Test Todo 1777262405259",
+      "description": "Created by Playwright API test",
+      "status": "active",
+      "priority": "medium",
+      "category": "Work",
+      "createdAt": "2026-04-27T04:00:05.259Z",
+      "updatedAt": "2026-04-27T04:00:05.259Z",
+      "id": 72
+    },
+    {
+      "title": "API Test Todo 1777262405441",
+      "description": "Created by Playwright API test",
+      "status": "completed",
+      "priority": "medium",
+      "category": "Work",
+      "createdAt": "2026-04-27T04:00:05.441Z",
+      "updatedAt": "2026-04-27T04:00:05.456Z",
+      "id": 73
+    },
+    {
+      "title": "Replaced Title",
+      "description": "Created by Playwright API test",
+      "status": "completed",
+      "priority": "high",
+      "category": "Work",
+      "createdAt": "2026-04-27T04:00:05.496Z",
+      "updatedAt": "2026-04-27T04:00:05.520Z",
+      "id": 74
+    },
+    {
+      "title": "API Test Todo 1777301249003",
+      "description": "Created by Playwright API test",
+      "status": "active",
+      "priority": "medium",
+      "category": "Work",
+      "createdAt": "2026-04-27T14:47:29.003Z",
+      "updatedAt": "2026-04-27T14:47:29.004Z",
+      "id": 75
+    },
+    {
+      "title": "API Test Todo 1777301249215",
+      "description": "Created by Playwright API test",
+      "status": "active",
+      "priority": "medium",
+      "category": "Work",
+      "createdAt": "2026-04-27T14:47:29.215Z",
+      "updatedAt": "2026-04-27T14:47:29.215Z",
+      "id": 76
+    },
+    {
+      "title": "API Test Todo 1777301249348",
+      "description": "Created by Playwright API test",
+      "status": "completed",
+      "priority": "medium",
+      "category": "Work",
+      "createdAt": "2026-04-27T14:47:29.348Z",
+      "updatedAt": "2026-04-27T14:47:29.380Z",
+      "id": 77
+    },
+    {
+      "title": "Replaced Title",
+      "description": "Created by Playwright API test",
+      "status": "completed",
+      "priority": "high",
+      "category": "Work",
+      "createdAt": "2026-04-27T14:47:29.437Z",
+      "updatedAt": "2026-04-27T14:47:29.453Z",
+      "id": 78
+    },
+    {
+      "title": "Test Todo 1777301258747",
+      "status": "active",
+      "priority": "high",
+      "category": "Work",
+      "createdAt": "2026-04-27T14:47:40.447Z",
+      "updatedAt": "2026-04-27T14:47:40.447Z",
+      "id": 79
+    },
+    {
+      "title": "Todo Full Fields 1777301282356",
+      "description": "Mô tả chi tiết của todo",
+      "status": "active",
+      "priority": "high",
+      "category": "Work",
+      "createdAt": "2026-04-27T14:48:03.544Z",
+      "updatedAt": "2026-04-27T14:48:03.544Z",
+      "id": 80
     }
   ]
 }
