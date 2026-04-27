@@ -27,44 +27,42 @@
 - Port **4200** (Angular) và **3000** (JSON Server) phải trống
 
 ### Cài đặt lần đầu
-```bash
+```cmd
 cd e:\AI_AGENT\Agent_Claude\todo-app
 npm install
 ```
 
 ### Chạy development (khuyến nghị)
-```bash
-# Khởi động cả Angular + JSON Server cùng lúc, tự động mở trình duyệt
+```cmd
+REM Khởi động cả Angular + JSON Server cùng lúc, tự động mở trình duyệt
 npm run dev
 ```
 - Angular app: `http://localhost:4200`
 - JSON Server API: `http://localhost:3000`
 
 ### Chạy riêng từng service
-```bash
-# Chỉ Angular dev server
+```cmd
+REM Chỉ Angular dev server
 npm start
-# hoặc: ng serve
 
-# Chỉ JSON Server (mock API)
+REM Chỉ JSON Server (mock API)
 npm run api
-# hoặc: npx json-server db.json --port 3000
 ```
 
 ### Build & Tests
-```bash
-# Build production
+```cmd
+REM Build production
 npm run build
 
-# Unit tests (Vitest)
+REM Unit tests (Vitest)
 npm test
 ```
 
 ### E2E tests (Playwright) — chạy từ thư mục `e2e/` riêng biệt
-```bash
+```cmd
 cd e:\AI_AGENT\Agent_Claude\e2e
 
-npm test                  # Tất cả tests — Chromium + Firefox (60 tests)
+npm test                  # Tất cả tests — Chromium + Firefox (71 tests)
 npm run test:chromium     # Chỉ Chromium
 npm run test:firefox      # Chỉ Firefox
 npm run test:headed       # Có hiển thị trình duyệt
@@ -73,26 +71,36 @@ npm run test:debug        # Debug từng bước
 npm run test:crud         # Chỉ file todo-crud.spec.ts
 npm run test:filter       # Chỉ file todo-filter.spec.ts
 npm run test:search       # Chỉ file todo-search.spec.ts
+npm run test:api          # Chỉ API tests (Chromium, không cần browser)
 npm run report            # Xem HTML report
+```
+
+### Sinh file Excel test case
+```cmd
+cd e:\AI_AGENT\Agent_Claude\e2e
+
+npm run gen:testcase      # Tạo e2e\testcases\TodoApp_TestCase.xlsx (39 test cases)
 ```
 
 ### Lưu ý quan trọng
 - `db.json` là CSDL thực — mọi thao tác thêm/sửa/xóa sẽ ghi trực tiếp vào file
 - E2E project nằm ở `e:\AI_AGENT\Agent_Claude\e2e\` — **độc lập** với `todo-app/`
-- Khi chạy E2E, **không cần start server thủ công** — Playwright tự quản lý qua `webServer` config
+- Khi chạy E2E UI tests, **không cần start server thủ công** — Playwright tự quản lý qua `webServer` config
+- API tests (`test:api`) gọi thẳng `http://localhost:3000` — JSON Server phải đang chạy
 - Các `npm run` scripts đã wrap sẵn lệnh đúng — **không cần gõ `node_modules/.bin/playwright`** trực tiếp
 - Unit test dùng **Vitest**, không phải Jasmine/Karma
 - Chỉ dùng `npm`, không dùng `yarn` hay `pnpm`
+- Shell: dùng **cmd** (không phải bash/PowerShell) cho các lệnh trong project này
 
 ---
 
 ## Commands
 
-```bash
-# Lint
+```cmd
+REM Lint
 ng lint
 
-# Generate components/services
+REM Generate components/services
 ng generate component features/todos/components/todo-list
 ng generate service core/services/todo
 ng generate pipe shared/pipes/filter-todos
@@ -143,11 +151,15 @@ e:\AI_AGENT\Agent_Claude\
     node_modules/
     package.json
     playwright.config.ts
+    generate-testcase.ts          # Script sinh file Excel test case (dùng exceljs + tsx)
+    testcases/
+      TodoApp_TestCase.xlsx       # 39 test cases — 5 sheets (CRUD/Filter/Search/Edit/API)
     tests/
       todo-crud.spec.ts
       todo-edit-add-extra.spec.ts
       todo-filter.spec.ts
       todo-search.spec.ts
+      todo-api.spec.ts            # API tests — gọi trực tiếp JSON Server /todos
 ```
 
 ---
@@ -302,9 +314,8 @@ form = this.fb.nonNullable.group({
 ## Testing
 
 ### Unit Tests (Vitest)
-```bash
+```cmd
 npm test
-# hoặc: ng test
 ```
 - Test `TodoService`: mock `HttpClientTestingModule`, verify CRUD calls
 - Test pipes: `FilterTodosPipe`, `PriorityLabelPipe`
@@ -318,11 +329,11 @@ E2E project nằm **độc lập** tại `e:\AI_AGENT\Agent_Claude\e2e\` — tá
 
 #### Bước 1 — Cài đặt (chỉ làm một lần)
 
-```bash
+```cmd
 cd e:\AI_AGENT\Agent_Claude\e2e
 
 npm install
-npm run playwright:install   # Cài Chromium + Firefox
+npm run playwright:install
 ```
 
 #### Bước 2 — Cấu hình (`e2e/playwright.config.ts`)
@@ -355,10 +366,10 @@ export default defineConfig({
 
 #### Bước 3 — Chạy tests
 
-```bash
+```cmd
 cd e:\AI_AGENT\Agent_Claude\e2e
 
-npm test                  # Tất cả (Chromium + Firefox, 60 tests)
+npm test                  # Tất cả UI tests — Chromium + Firefox (71 tests)
 npm run test:chromium     # Chỉ Chromium
 npm run test:firefox      # Chỉ Firefox
 npm run test:headed       # Có hiển thị trình duyệt
@@ -366,7 +377,11 @@ npm run test:ui           # Mở Playwright UI — debug từng bước
 npm run test:crud         # Chỉ file todo-crud.spec.ts
 npm run test:filter       # Chỉ file todo-filter.spec.ts
 npm run test:search       # Chỉ file todo-search.spec.ts
+npm run test:api          # API tests — gọi thẳng JSON Server (Chromium only, 11 tests)
 npm run report            # Xem HTML report
+
+REM Sinh file Excel test case (39 TCs, 5 sheets)
+npm run gen:testcase
 ```
 
 #### Bước 4 — Đọc kết quả
@@ -381,7 +396,9 @@ ok  4 [firefox]  › tests/todo-crud.spec.ts › should edit an existing todo   
 - `ok` = pass | `x` = fail | `flaky` = fail lần 1, pass retry
 - HTML report: `e2e/playwright-report/index.html`
 
-#### Kết quả thực tế (2026-04-19)
+#### Kết quả thực tế (2026-04-27)
+
+**UI Tests**
 
 | Browser | Passed | Failed | Tổng |
 |---|---|---|---|
@@ -389,14 +406,21 @@ ok  4 [firefox]  › tests/todo-crud.spec.ts › should edit an existing todo   
 | Firefox | 30 | 0 | 30 |
 | **Tổng** | **60** | **0** | **60** |
 
+**API Tests**
+
+| Browser | Passed | Failed | Tổng |
+|---|---|---|---|
+| Chromium | 11 | 0 | 11 |
+
 #### Các file test (`e2e/tests/`)
 
-| File | Kịch bản |
-|---|---|
-| `todo-crud.spec.ts` | Hiển thị danh sách; Thêm/Sửa/Xóa todo; Validation; Toggle trạng thái |
-| `todo-edit-add-extra.spec.ts` | Edge cases: pre-fill form; validation maxLength; cancel không lưu |
-| `todo-filter.spec.ts` | Lọc theo Active/Completed/High priority; Reset bộ lọc; Lọc theo category |
-| `todo-search.spec.ts` | Tìm kiếm; Empty state; Clear search; Bulk actions |
+| File | Loại | Kịch bản |
+|---|---|---|
+| `todo-crud.spec.ts` | UI | Hiển thị danh sách; Thêm/Sửa/Xóa todo; Validation; Toggle trạng thái |
+| `todo-edit-add-extra.spec.ts` | UI | Edge cases: pre-fill form; validation maxLength; cancel không lưu |
+| `todo-filter.spec.ts` | UI | Lọc theo Active/Completed/High priority; Reset bộ lọc; Lọc theo category |
+| `todo-search.spec.ts` | UI | Tìm kiếm; Empty state; Clear search; Bulk actions |
+| `todo-api.spec.ts` | API | GET/POST/PATCH/PUT/DELETE; Filter; Search; 404 handling |
 
 #### Thêm test case mới
 
@@ -418,29 +442,40 @@ test.describe('Dashboard', () => {
 
 Playwright tự động nhận file mới, không cần cấu hình thêm.
 
+#### Excel Test Case (`e2e/testcases/TodoApp_TestCase.xlsx`)
+
+File Excel chứa 39 test cases chia thành 5 sheet: CRUD Tests, Filter Tests, Search Tests, Edit-Add Extra, API Tests.
+
+Mỗi test case có: Test ID, Module, Test Case Name, Precondition, Steps, Expected Result, Priority, Type, Status.
+
+```cmd
+cd e:\AI_AGENT\Agent_Claude\e2e
+npm run gen:testcase      # Tái tạo file Excel từ generate-testcase.ts
+```
+
 ---
 
 ## Setup Mới
 
-```bash
-# 1. Tạo dự án Angular
+```cmd
+REM 1. Tạo dự án Angular
 ng new todo-app --standalone --routing --style=scss
 
-# 2. Cài Angular Material
+REM 2. Cài Angular Material
 cd todo-app
 ng add @angular/material
 
-# 3. Cài JSON Server + Concurrently
+REM 3. Cài JSON Server + Concurrently
 npm install --save-dev json-server concurrently
 
-# 4. Tạo db.json
-echo '{"todos":[]}' > db.json
+REM 4. Tạo db.json
+echo {"todos":[]} > db.json
 
-# 5. Tạo E2E project riêng (đồng cấp với todo-app)
-mkdir ../e2e && cd ../e2e
+REM 5. Tạo E2E project riêng (đồng cấp với todo-app)
+mkdir ..\e2e && cd ..\e2e
 npm init -y
-npm install --save-dev @playwright/test
-npm run playwright:install   # Cài Chromium + Firefox (script trong package.json)
+npm install --save-dev @playwright/test exceljs tsx
+npm run playwright:install
 mkdir tests
 ```
 
@@ -510,3 +545,32 @@ mkdir tests
 | Chromium | 30 | 0 | 30 |
 | Firefox | 30 | 0 | 30 |
 | **Tổng** | **60** | **0** | **60** |
+
+---
+
+### 2026-04-27 — API Tests + Excel Test Case + CMD Docs
+
+**Thêm Playwright API Tests**
+- Tạo `e2e/tests/todo-api.spec.ts` — 11 test cases gọi trực tiếp JSON Server `http://localhost:3000`
+- Bao phủ: GET list, GET by id, POST (201), PATCH, PUT, DELETE, filter by status/priority, title_like search, 404 handling
+- Script mới: `npm run test:api` (Chromium only, không cần browser render)
+- Kết quả: **11/11 PASS**
+
+**Thêm Excel Test Case Generator**
+- Tạo `e2e/generate-testcase.ts` — dùng `exceljs` + `tsx` để sinh file `.xlsx`
+- Output: `e2e/testcases/TodoApp_TestCase.xlsx` — 39 test cases, 5 sheets
+- Script mới: `npm run gen:testcase`
+- Cài thêm devDependencies: `exceljs ^4.4.0`, `tsx ^4.19.4`
+
+**Cập nhật docs sang CMD syntax**
+- Đổi tất cả code block `bash` → `cmd` (dùng `REM` thay `#`, backslash trong paths)
+- Thêm lưu ý: shell mặc định là **cmd** cho project này
+- Cập nhật tổng số tests: 60 UI + 11 API = 71 tests
+
+**Kết quả tổng**
+
+| Loại | Browser | Passed | Tổng |
+|---|---|---|---|
+| UI Tests | Chromium + Firefox | 60 | 60 |
+| API Tests | Chromium | 11 | 11 |
+| **Tổng** | | **71** | **71** |
